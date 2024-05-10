@@ -1,0 +1,40 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB           #Probalistic Outcome
+from sklearn.pipeline import make_pipeline
+
+data = {
+    'email_text': [
+        "Hi, how are you?",
+        "Can we meet tomorrow?",
+        "Regarding our meeting",
+        "Thanks for your email",
+        "See you later"
+    ],
+    'reply': [
+        "I'm good, thanks!",
+        "Sure, let's meet",
+        "Sure, what time?",
+        "You're welcome!",
+        "Ok, Goodbye"
+    ]
+}
+
+df = pd.DataFrame(data)
+
+train_data, test_data, train_labels, test_labels = train_test_split(
+    df['email_text'], df['reply'], test_size=0.2, random_state=42)
+
+model = make_pipeline(TfidfVectorizer(), MultinomialNB())
+model.fit(train_data, train_labels)
+
+predictions = model.predict(test_data)
+
+new_email = ["can we catch up later?"]
+
+#Can we meet regarding about project work?
+predicted_response = model.predict(new_email)
+
+print("New Email:", new_email[0])
+print("Predicted Response:", predicted_response[0])
