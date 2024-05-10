@@ -1,0 +1,60 @@
+# Import necessary libraries
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the Breast Cancer Wisconsin dataset
+cancer = load_breast_cancer()
+X = cancer.data
+y = cancer.target
+
+# Get column names
+feature_names = cancer.feature_names
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create an SVM classifier
+svm_classifier = SVC(kernel='linear', C=1.0, random_state=42)
+
+# Train the classifier on the training set
+svm_classifier.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = svm_classifier.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+
+# Generate confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Print column names
+print("Feature Names:")
+print(feature_names)
+
+# Plot confusion matrix using seaborn heatmap
+plt.figure(figsize=(12, 8))
+
+# Plot confusion matrix heatmap
+plt.subplot(1, 2, 1)
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False,
+            xticklabels=['Benign', 'Malignant'],
+            yticklabels=['Benign', 'Malignant'])
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+
+# Plot feature importance bar plot
+plt.subplot(1, 2, 2)
+plt.barh(feature_names, svm_classifier.coef_[0], color='skyblue')
+plt.xlabel('Feature Importance')
+plt.ylabel('Feature Names')
+plt.title('Feature Importance based on SVM')
+plt.tight_layout()
+
+plt.show()
