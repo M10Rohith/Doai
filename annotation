@@ -1,0 +1,19 @@
+import tensorflow as tf
+from tensorflow.keras.datasets import cifar10
+
+(X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+X_train = X_train.astype('float32') / 255.0
+X_test = X_test.astype('float32') / 255.0      #Normalization
+
+y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
+y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)  # ONE HOT ENCODING
+
+from keras.preprocessing.image import ImageDataGenerator
+datagen = ImageDataGenerator(rotation_range=10, width_shift_range=0.1,height_shift_range=0.1, horizontal_flip=True)
+datagen.fit(X_train)     # Data Augumentation
+
+annot = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+
+print("col_label: ", annot[int(tf.argmax(y_train[8], axis=-1))])
+
